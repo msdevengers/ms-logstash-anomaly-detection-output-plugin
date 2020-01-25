@@ -23,13 +23,14 @@ import java.util.concurrent.CountDownLatch;
 public class MsAdOutputplugin implements Output {
 
     public static final PluginConfigSpec<String> API_KEY = PluginConfigSpec.stringSetting("apikey", "");
-    public static final PluginConfigSpec<String> TIMESTAMP_COLUMN = PluginConfigSpec.stringSetting("ts_column", "");
+    public static final PluginConfigSpec<String> TIMESTAMP_COLUMN = PluginConfigSpec.stringSetting("ts_column", "ts");
     public static final PluginConfigSpec<String> TIMESERIES_GRANULARITY = PluginConfigSpec.stringSetting("ts_granularity", "");
+    public static final PluginConfigSpec<String> TIMESERIES_VALUE_COLUMN = PluginConfigSpec.stringSetting("ts_value_column", "TotalOperationDuration");
 
     private final String id;
     private final String granularity;
     private final String api_key;
-
+    private final String ts_value_column;
     private final String timestamp_column;
 
     private PrintStream printer;
@@ -51,7 +52,8 @@ public class MsAdOutputplugin implements Output {
         this.api_key = config.get(API_KEY);
         this.timestamp_column = config.get(TIMESTAMP_COLUMN);
         this.granularity = config.get(TIMESERIES_GRANULARITY);
-
+        this.ts_value_column = config.get(TIMESERIES_VALUE_COLUMN);
+        
         this.batchRequest = new BatchRequest(new ArrayList<>(),this.granularity);
 
         printer = new PrintStream(targetStream);
@@ -62,8 +64,6 @@ public class MsAdOutputplugin implements Output {
     @Override
     public void output(final Collection<Event> events) {
         Iterator<Event> z = events.iterator();
-
-
         ArrayList<Point> pointCollection = new ArrayList<>();
 
         while (z.hasNext() && !stopped) {
@@ -71,7 +71,7 @@ public class MsAdOutputplugin implements Output {
             printer.println(event.toString());
             Map<String,Object> map = event.getData();
 
-            long duration = Long.parseLong(map.get("TotalOperationDuration").toString());
+            long duration = Long.parseLong(map.get(this.ts_value_column).toString());
             String timestamp = (map.get("ts").toString());
 
 
@@ -113,7 +113,7 @@ public class MsAdOutputplugin implements Output {
 
         ((ArrayList<PluginConfigSpec<?>>) configSpecs).add(API_KEY);
         ((ArrayList<PluginConfigSpec<?>>) configSpecs).add(TIMESTAMP_COLUMN);
-
+        ((ArrayList<PluginConfigSpec<?>>) configSpecs).add(TIMESERIES_VALUE_COLUMN);
         ((ArrayList<PluginConfigSpec<?>>) configSpecs).add(TIMESERIES_GRANULARITY);
 
         return configSpecs;

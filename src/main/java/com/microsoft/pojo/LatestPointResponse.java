@@ -1,4 +1,4 @@
-package org.pojo;
+package com.microsoft.pojo;
 
 public class LatestPointResponse {
     private float expectedValue;

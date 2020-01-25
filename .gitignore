@@ -1,3 +1,7 @@
+.classpath
+.project
+.settings/
+.vscode/
 build
 bin
 *.idea

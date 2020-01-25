@@ -9,9 +9,7 @@ import co.elastic.logstash.api.PluginConfigSpec;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
+import java.util.*;
 import java.util.concurrent.CountDownLatch;
 
 // class name must match plugin name
@@ -37,14 +35,27 @@ public class JavaOutputExample implements Output {
         this.id = id;
         prefix = config.get(PREFIX_CONFIG);
         printer = new PrintStream(targetStream);
+        printer.println("PAMIRRR Started Plugin");
+
     }
 
     @Override
     public void output(final Collection<Event> events) {
         Iterator<Event> z = events.iterator();
         while (z.hasNext() && !stopped) {
-            String s = prefix + z.next();
-            printer.println(s);
+            Event event = z.next();
+            printer.println(event.toString());
+            Map<String,Object> map = event.getMetadata();
+            for(Map.Entry<String,Object> entry : map.entrySet()){
+                printer.println("entry.getKey() = " + entry.getKey());
+                printer.println("entry.getValue() = " + entry.getValue());
+            }
+            map = event.getData();
+            for(Map.Entry<String,Object> entry : map.entrySet()){
+                printer.println("data.entry.getKey() = " + entry.getKey());
+                printer.println("data.entry.getValue() = " + entry.getValue());
+            }
+
         }
     }
 

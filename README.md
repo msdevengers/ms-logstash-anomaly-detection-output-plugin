@@ -1,4 +1,4 @@
-# AD Logstash Output Java Plugin
+# Anomaly Detector Cognitive Service Logstash Output Java Plugin
 
 [![Travis Build Status](https://travis-ci.org/logstash-plugins/logstash-output-java_output_example.svg)](https://travis-ci.org/logstash-plugins/logstash-output-java_output_example)
 

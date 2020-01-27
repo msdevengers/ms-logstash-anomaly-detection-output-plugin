@@ -46,3 +46,5 @@ docker run -d \
 docker logs ms-ad-plugin
 
 ```
+
+[![Building and Executing Ms Logstash AD Output Plugin](https://img.youtube.com/vi/tfNje8Q5IkM/0.jpg)](https://www.youtube.com/watch?v=tfNje8Q5IkM)

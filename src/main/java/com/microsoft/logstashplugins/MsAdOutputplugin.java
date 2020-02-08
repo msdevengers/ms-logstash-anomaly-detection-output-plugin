@@ -26,12 +26,14 @@ public class MsAdOutputplugin implements Output {
     public static final PluginConfigSpec<String> TIMESTAMP_COLUMN = PluginConfigSpec.stringSetting("ts_column", "ts");
     public static final PluginConfigSpec<String> TIMESERIES_GRANULARITY = PluginConfigSpec.stringSetting("ts_granularity", "");
     public static final PluginConfigSpec<String> TIMESERIES_VALUE_COLUMN = PluginConfigSpec.stringSetting("ts_value_column", "TotalOperationDuration");
+    public static final PluginConfigSpec<Boolean> DEBUG_ENABLED = PluginConfigSpec.booleanSetting("debug_enabled", false);
 
     private final String id;
     private final String granularity;
     private final String api_key;
     private final String ts_value_column;
     private final String timestamp_column;
+    private final Boolean debug_enabled;
 
     private PrintStream printer;
     private final CountDownLatch done = new CountDownLatch(1);
@@ -53,6 +55,7 @@ public class MsAdOutputplugin implements Output {
         this.timestamp_column = config.get(TIMESTAMP_COLUMN);
         this.granularity = config.get(TIMESERIES_GRANULARITY);
         this.ts_value_column = config.get(TIMESERIES_VALUE_COLUMN);
+        this.debug_enabled = config.get(DEBUG_ENABLED);
         
         this.batchRequest = new BatchRequest(new ArrayList<>(),this.granularity);
 
@@ -115,6 +118,7 @@ public class MsAdOutputplugin implements Output {
         ((ArrayList<PluginConfigSpec<?>>) configSpecs).add(TIMESTAMP_COLUMN);
         ((ArrayList<PluginConfigSpec<?>>) configSpecs).add(TIMESERIES_VALUE_COLUMN);
         ((ArrayList<PluginConfigSpec<?>>) configSpecs).add(TIMESERIES_GRANULARITY);
+        ((ArrayList<PluginConfigSpec<?>>) configSpecs).add(DEBUG_ENABLED);
 
         return configSpecs;
     }

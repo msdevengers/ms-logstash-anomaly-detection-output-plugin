@@ -103,10 +103,18 @@ public class MsAdOutputplugin implements Output {
         AnomalyDetectorDao dao = new AnomalyDetectorDao(this.api_key,this.ad_server,this.printer);
         Collections.sort((ArrayList<Point>)batchRequest.getSeries());
         ((ArrayList<Point>) batchRequest.getSeries()).remove(batchRequest.getSeries().size() / 2);
-        printer.println(new Gson().toJson(batchRequest));
-
+        
+        //debug enable print the request to console
+        if(debug_enabled){
+            printer.println(new Gson().toJson(batchRequest));
+        }
+    
         BatchResponse response = dao.find(batchRequest);
-        printer.print(new Gson().toJson(response));
+        
+        //debug enabled
+        //log response to console
+        if(debug_enabled)
+            printer.print(new Gson().toJson(response));
         stopped = true;
         done.countDown();
     }

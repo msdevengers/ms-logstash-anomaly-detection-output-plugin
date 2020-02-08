@@ -27,13 +27,18 @@ public class MsAdOutputplugin implements Output {
     public static final PluginConfigSpec<String> TIMESERIES_GRANULARITY = PluginConfigSpec.stringSetting("ts_granularity", "");
     public static final PluginConfigSpec<String> TIMESERIES_VALUE_COLUMN = PluginConfigSpec.stringSetting("ts_value_column", "TotalOperationDuration");
     public static final PluginConfigSpec<Boolean> DEBUG_ENABLED = PluginConfigSpec.booleanSetting("debug_enabled", false);
+    public static final PluginConfigSpec<String> AD_SERVER = PluginConfigSpec.stringSetting("ad_server", "http://localhost:5000");
 
     private final String id;
     private final String granularity;
     private final String api_key;
     private final String ts_value_column;
     private final String timestamp_column;
+
     private final Boolean debug_enabled;
+
+    private final String ad_server;
+
 
     private PrintStream printer;
     private final CountDownLatch done = new CountDownLatch(1);
@@ -56,6 +61,8 @@ public class MsAdOutputplugin implements Output {
         this.granularity = config.get(TIMESERIES_GRANULARITY);
         this.ts_value_column = config.get(TIMESERIES_VALUE_COLUMN);
         this.debug_enabled = config.get(DEBUG_ENABLED);
+        this.ad_server = config.get(AD_SERVER);
+
         
         this.batchRequest = new BatchRequest(new ArrayList<>(),this.granularity);
 
@@ -93,7 +100,7 @@ public class MsAdOutputplugin implements Output {
 
     @Override
     public void stop() {
-        AnomalyDetectorDao dao = new AnomalyDetectorDao(this.api_key);
+        AnomalyDetectorDao dao = new AnomalyDetectorDao(this.api_key,this.ad_server,this.printer);
         Collections.sort((ArrayList<Point>)batchRequest.getSeries());
         ((ArrayList<Point>) batchRequest.getSeries()).remove(batchRequest.getSeries().size() / 2);
         printer.println(new Gson().toJson(batchRequest));
@@ -119,6 +126,8 @@ public class MsAdOutputplugin implements Output {
         ((ArrayList<PluginConfigSpec<?>>) configSpecs).add(TIMESERIES_VALUE_COLUMN);
         ((ArrayList<PluginConfigSpec<?>>) configSpecs).add(TIMESERIES_GRANULARITY);
         ((ArrayList<PluginConfigSpec<?>>) configSpecs).add(DEBUG_ENABLED);
+        ((ArrayList<PluginConfigSpec<?>>) configSpecs).add(AD_SERVER);
+
 
         return configSpecs;
     }

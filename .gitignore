@@ -22,3 +22,5 @@ out/
 Gemfile*
 settings.gradle
 gradle.properties
+
+config/logstash.conf
